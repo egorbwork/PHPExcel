@@ -1066,7 +1066,7 @@ class PHPExcel_Writer_Excel2007_Chart extends PHPExcel_Writer_Excel2007_WriterPa
 
         //    Get these details before the loop, because we can use the count to check for varyColors
         $plotSeriesOrder = $plotGroup->getPlotOrder();
-        $plotSeriesCount = count($plotSeriesOrder);
+        $plotSeriesCount = is_countable($plotSeriesOrder) ? count($plotSeriesOrder) : 0;
 
         if (($groupType !== PHPExcel_Chart_DataSeries::TYPE_RADARCHART) && ($groupType !== PHPExcel_Chart_DataSeries::TYPE_STOCKCHART)) {
             if ($groupType !== PHPExcel_Chart_DataSeries::TYPE_LINECHART) {

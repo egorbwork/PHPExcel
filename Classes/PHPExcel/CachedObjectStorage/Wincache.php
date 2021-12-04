@@ -250,7 +250,7 @@ class PHPExcel_CachedObjectStorage_Wincache extends PHPExcel_CachedObjectStorage
      */
     public function __construct(PHPExcel_Worksheet $parent, $arguments)
     {
-        $cacheTime    = (isset($arguments['cacheTime']))    ? $arguments['cacheTime']    : 600;
+        $cacheTime    = $arguments['cacheTime'] ?? 600;
 
         if (is_null($this->cachePrefix)) {
             $baseUnique = $this->getUniqueID();

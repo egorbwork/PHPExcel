@@ -105,7 +105,7 @@ class PHPExcel_Cell_Hyperlink
      */
     public function isInternal()
     {
-        return strpos($this->url, 'sheet://') !== false;
+        return str_contains($this->url, 'sheet://');
     }
 
     /**

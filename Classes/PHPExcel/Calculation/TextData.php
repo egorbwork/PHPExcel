@@ -252,7 +252,7 @@ class PHPExcel_Calculation_TextData
                 if (function_exists('mb_strpos')) {
                     $pos = mb_strpos($haystack, $needle, --$offset, 'UTF-8');
                 } else {
-                    $pos = strpos($haystack, $needle, --$offset);
+                    $pos = strpos($haystack, (string) $needle, --$offset);
                 }
                 if ($pos !== false) {
                     return ++$pos;
@@ -289,7 +289,7 @@ class PHPExcel_Calculation_TextData
                 if (function_exists('mb_stripos')) {
                     $pos = mb_stripos($haystack, $needle, --$offset, 'UTF-8');
                 } else {
-                    $pos = stripos($haystack, $needle, --$offset);
+                    $pos = stripos($haystack, (string) $needle, --$offset);
                 }
                 if ($pos !== false) {
                     return ++$pos;
@@ -551,7 +551,7 @@ class PHPExcel_Calculation_TextData
                 if (function_exists('mb_strpos')) {
                     $pos = mb_strpos($text, $fromText, $pos+1, 'UTF-8');
                 } else {
-                    $pos = strpos($text, $fromText, $pos+1);
+                    $pos = strpos($text, (string) $fromText, $pos+1);
                 }
                 if ($pos === false) {
                     break;
@@ -630,7 +630,7 @@ class PHPExcel_Calculation_TextData
             $dateSetting = PHPExcel_Calculation_Functions::getReturnDateType();
             PHPExcel_Calculation_Functions::setReturnDateType(PHPExcel_Calculation_Functions::RETURNDATE_EXCEL);
 
-            if (strpos($value, ':') !== false) {
+            if (str_contains($value, ':')) {
                 $timeValue = PHPExcel_Calculation_DateTime::TIMEVALUE($value);
                 if ($timeValue !== PHPExcel_Calculation_Functions::VALUE()) {
                     PHPExcel_Calculation_Functions::setReturnDateType($dateSetting);

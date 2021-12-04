@@ -508,7 +508,7 @@ class PHPExcel_Cell
     {
         if ($mergeRange = $this->getMergeRange()) {
             $mergeRange = PHPExcel_Cell::splitRange($mergeRange);
-            list($startCell) = $mergeRange[0];
+            [$startCell] = $mergeRange[0];
             if ($this->getCoordinate() === $startCell) {
                 return true;
             }
@@ -562,7 +562,7 @@ class PHPExcel_Cell
      */
     public function isInRange($pRange = 'A1:A1')
     {
-        list($rangeStart, $rangeEnd) = self::rangeBoundaries($pRange);
+        [$rangeStart, $rangeEnd] = self::rangeBoundaries($pRange);
 
         // Translate properties
         $myColumn = self::columnIndexFromString($this->getColumn());
@@ -585,7 +585,7 @@ class PHPExcel_Cell
     {
         if (preg_match("/^([$]?[A-Z]{1,3})([$]?\d{1,7})$/", $pCoordinateString, $matches)) {
             return array($matches[1],$matches[2]);
-        } elseif ((strpos($pCoordinateString, ':') !== false) || (strpos($pCoordinateString, ',') !== false)) {
+        } elseif ((str_contains($pCoordinateString, ':')) || (str_contains($pCoordinateString, ','))) {
             throw new PHPExcel_Exception('Cell coordinate string can not be a range of cells');
         } elseif ($pCoordinateString == '') {
             throw new PHPExcel_Exception('Cell coordinate can not be zero-length string');
@@ -604,12 +604,12 @@ class PHPExcel_Cell
      */
     public static function absoluteReference($pCoordinateString = 'A1')
     {
-        if (strpos($pCoordinateString, ':') === false && strpos($pCoordinateString, ',') === false) {
+        if (!str_contains($pCoordinateString, ':') && !str_contains($pCoordinateString, ',')) {
             // Split out any worksheet name from the reference
             $worksheet = '';
             $cellAddress = explode('!', $pCoordinateString);
             if (count($cellAddress) > 1) {
-                list($worksheet, $pCoordinateString) = $cellAddress;
+                [$worksheet, $pCoordinateString] = $cellAddress;
             }
             if ($worksheet > '') {
                 $worksheet .= '!';
@@ -636,19 +636,19 @@ class PHPExcel_Cell
      */
     public static function absoluteCoordinate($pCoordinateString = 'A1')
     {
-        if (strpos($pCoordinateString, ':') === false && strpos($pCoordinateString, ',') === false) {
+        if (!str_contains($pCoordinateString, ':') && !str_contains($pCoordinateString, ',')) {
             // Split out any worksheet name from the coordinate
             $worksheet = '';
             $cellAddress = explode('!', $pCoordinateString);
             if (count($cellAddress) > 1) {
-                list($worksheet, $pCoordinateString) = $cellAddress;
+                [$worksheet, $pCoordinateString] = $cellAddress;
             }
             if ($worksheet > '') {
                 $worksheet .= '!';
             }
 
             // Create absolute coordinate
-            list($column, $row) = self::coordinateFromString($pCoordinateString);
+            [$column, $row] = self::coordinateFromString($pCoordinateString);
             $column = ltrim($column, '$');
             $row = ltrim($row, '$');
             return $worksheet . '$' . $column . '$' . $row;
@@ -723,10 +723,10 @@ class PHPExcel_Cell
         $pRange = strtoupper($pRange);
 
         // Extract range
-        if (strpos($pRange, ':') === false) {
+        if (!str_contains($pRange, ':')) {
             $rangeA = $rangeB = $pRange;
         } else {
-            list($rangeA, $rangeB) = explode(':', $pRange);
+            [$rangeA, $rangeB] = explode(':', $pRange);
         }
 
         // Calculate range outer borders
@@ -749,7 +749,7 @@ class PHPExcel_Cell
     public static function rangeDimension($pRange = 'A1:A1')
     {
         // Calculate range outer borders
-        list($rangeStart, $rangeEnd) = self::rangeBoundaries($pRange);
+        [$rangeStart, $rangeEnd] = self::rangeBoundaries($pRange);
 
         return array( ($rangeEnd[0] - $rangeStart[0] + 1), ($rangeEnd[1] - $rangeStart[1] + 1) );
     }
@@ -772,10 +772,10 @@ class PHPExcel_Cell
         $pRange = strtoupper($pRange);
 
         // Extract range
-        if (strpos($pRange, ':') === false) {
+        if (!str_contains($pRange, ':')) {
             $rangeA = $rangeB = $pRange;
         } else {
-            list($rangeA, $rangeB) = explode(':', $pRange);
+            [$rangeA, $rangeB] = explode(':', $pRange);
         }
 
         return array( self::coordinateFromString($rangeA), self::coordinateFromString($rangeB));
@@ -868,7 +868,7 @@ class PHPExcel_Cell
         $cellBlocks = explode(' ', str_replace('$', '', strtoupper($pRange)));
         foreach ($cellBlocks as $cellBlock) {
             // Single cell?
-            if (strpos($cellBlock, ':') === false && strpos($cellBlock, ',') === false) {
+            if (!str_contains($cellBlock, ':') && !str_contains($cellBlock, ',')) {
                 $returnValue[] = $cellBlock;
                 continue;
             }
@@ -883,7 +883,7 @@ class PHPExcel_Cell
                 }
 
                 // Range...
-                list($rangeStart, $rangeEnd)    = $range;
+                [$rangeStart, $rangeEnd]    = $range;
                 sscanf($rangeStart, '%[A-Z]%d', $startCol, $startRow);
                 sscanf($rangeEnd, '%[A-Z]%d', $endCol, $endRow);
                 ++$endCol;

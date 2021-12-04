@@ -53,7 +53,7 @@ class testDataFileIterator implements Iterator
         } while (($testDataRow > '') && ($testDataRow[0] === '#'));
 
         //    Discard any comments at the end of the line
-        list($testData) = explode('//', $testDataRow);
+        [$testData] = explode('//', $testDataRow);
 
         //    Split data into an array of individual values and a result
         $dataSet = $this->_getcsv($testData, ',', "'");
@@ -99,7 +99,7 @@ class testDataFileIterator implements Iterator
             } elseif (($dataValue[0] == '{') && ($dataValue[strlen($dataValue)-1] == '}')) {
                 $dataValue = explode(';', substr($dataValue, 1, -1));
                 foreach ($dataValue as &$dataRow) {
-                    if (strpos($dataRow, '|') !== false) {
+                    if (str_contains($dataRow, '|')) {
                         $dataRow = explode('|', $dataRow);
                         foreach ($dataRow as &$dataCell) {
                             $dataCell = $this->_parseDataValue($dataCell);
@@ -124,7 +124,7 @@ class testDataFileIterator implements Iterator
                 }
             }
         } else {
-            if (strpos($dataValue, '.') !== false) {
+            if (str_contains($dataValue, '.')) {
                 $dataValue = (float) $dataValue;
             } else {
                 $dataValue = (int) $dataValue;

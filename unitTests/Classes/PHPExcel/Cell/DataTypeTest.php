@@ -16,7 +16,7 @@ class DataTypeTest extends PHPUnit_Framework_TestCase
     {
         $result = call_user_func(array('PHPExcel_Cell_DataType','getErrorCodes'));
         $this->assertInternalType('array', $result);
-        $this->assertGreaterThan(0, count($result));
+        $this->assertGreaterThan(0, is_countable($result) ? count($result) : 0);
         $this->assertArrayHasKey('#NULL!', $result);
     }
 }

@@ -518,7 +518,7 @@ class PHPExcel_Style_NumberFormat extends PHPExcel_Style_Supervisor implements P
         $adjustedDecimalPart = $decimalPart/$GCD;
         $adjustedDecimalDivisor = $decimalDivisor/$GCD;
 
-        if ((strpos($format, '0') !== false) || (strpos($format, '#') !== false) || (substr($format, 0, 3) == '? ?')) {
+        if ((str_contains($format, '0')) || (str_contains($format, '#')) || (substr($format, 0, 3) == '? ?')) {
             if ($integerPart == 0) {
                 $integerPart = '';
             }
@@ -533,7 +533,7 @@ class PHPExcel_Style_NumberFormat extends PHPExcel_Style_Supervisor implements P
     {
         $sign = ($number < 0.0);
         $number = abs($number);
-        if (strpos($mask, '.') !== false) {
+        if (str_contains($mask, '.')) {
             $numbers = explode('.', $number . '.0');
             $masks = explode('.', $mask . '.0');
             $result1 = self::complexNumberFormatMask($numbers[0], $masks[0], 1);
@@ -602,7 +602,7 @@ class PHPExcel_Style_NumberFormat extends PHPExcel_Style_Supervisor implements P
         //   2 sections:  [POSITIVE/ZERO/TEXT] [NEGATIVE]
         //   3 sections:  [POSITIVE/TEXT] [NEGATIVE] [ZERO]
         //   4 sections:  [POSITIVE] [NEGATIVE] [ZERO] [TEXT]
-        switch (count($sections)) {
+        switch (is_countable($sections) ? count($sections) : 0) {
             case 1:
                 $format = $sections[0];
                 break;
@@ -728,7 +728,7 @@ class PHPExcel_Style_NumberFormat extends PHPExcel_Style_Supervisor implements P
                     //  Currency or Accounting
                     $currencyFormat = $m[0];
                     $currencyCode = $m[1];
-                    list($currencyCode) = explode('-', $currencyCode);
+                    [$currencyCode] = explode('-', $currencyCode);
                     if ($currencyCode == '') {
                         $currencyCode = PHPExcel_Shared_String::getCurrencyCode();
                     }
@@ -742,7 +742,7 @@ class PHPExcel_Style_NumberFormat extends PHPExcel_Style_Supervisor implements P
 
         // Additional formatting provided by callback function
         if ($callBack !== null) {
-            list($writerInstance, $function) = $callBack;
+            [$writerInstance, $function] = $callBack;
             $value = $writerInstance->$function($value, $formatColor);
         }
 

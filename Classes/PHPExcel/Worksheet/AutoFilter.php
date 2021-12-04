@@ -108,10 +108,10 @@ class PHPExcel_Worksheet_AutoFilter
         // Uppercase coordinate
         $cellAddress = explode('!', strtoupper($pRange));
         if (count($cellAddress) > 1) {
-            list($worksheet, $pRange) = $cellAddress;
+            [$worksheet, $pRange] = $cellAddress;
         }
 
-        if (strpos($pRange, ':') !== false) {
+        if (str_contains($pRange, ':')) {
             $this->range = $pRange;
         } elseif (empty($pRange)) {
             $this->range = '';
@@ -124,7 +124,7 @@ class PHPExcel_Worksheet_AutoFilter
             $this->columns = array();
         } else {
             //    Discard any column rules that are no longer valid within this range
-            list($rangeStart, $rangeEnd) = PHPExcel_Cell::rangeBoundaries($this->range);
+            [$rangeStart, $rangeEnd] = PHPExcel_Cell::rangeBoundaries($this->range);
             foreach ($this->columns as $key => $value) {
                 $colIndex = PHPExcel_Cell::columnIndexFromString($key);
                 if (($rangeStart[0] > $colIndex) || ($rangeEnd[0] < $colIndex)) {
@@ -161,7 +161,7 @@ class PHPExcel_Worksheet_AutoFilter
         }
 
         $columnIndex = PHPExcel_Cell::columnIndexFromString($column);
-        list($rangeStart, $rangeEnd) = PHPExcel_Cell::rangeBoundaries($this->range);
+        [$rangeStart, $rangeEnd] = PHPExcel_Cell::rangeBoundaries($this->range);
         if (($rangeStart[0] > $columnIndex) || ($rangeEnd[0] < $columnIndex)) {
             throw new PHPExcel_Exception("Column is outside of current autofilter range.");
         }
@@ -208,7 +208,7 @@ class PHPExcel_Worksheet_AutoFilter
      */
     public function getColumnByOffset($pColumnOffset = 0)
     {
-        list($rangeStart, $rangeEnd) = PHPExcel_Cell::rangeBoundaries($this->range);
+        [$rangeStart, $rangeEnd] = PHPExcel_Cell::rangeBoundaries($this->range);
         $pColumn = PHPExcel_Cell::stringFromColumnIndex($rangeStart[0] + $pColumnOffset - 1);
 
         return $this->getColumn($pColumn);
@@ -360,7 +360,7 @@ class PHPExcel_Worksheet_AutoFilter
     {
         $dataSet = $ruleSet['filterRules'];
         $join = $ruleSet['join'];
-        $customRuleForBlanks = isset($ruleSet['customRuleForBlanks']) ? $ruleSet['customRuleForBlanks'] : false;
+        $customRuleForBlanks = $ruleSet['customRuleForBlanks'] ?? false;
 
         if (!$customRuleForBlanks) {
             //    Blank cells are always ignored, so return a FALSE
@@ -580,8 +580,9 @@ class PHPExcel_Worksheet_AutoFilter
         } else {
             sort($dataValues);
         }
+        $arraySlice = array_slice($dataValues, 0, $ruleValue);
 
-        return array_pop(array_slice($dataValues, 0, $ruleValue));
+        return array_pop($arraySlice);
     }
 
     /**
@@ -592,7 +593,7 @@ class PHPExcel_Worksheet_AutoFilter
      */
     public function showHideRows()
     {
-        list($rangeStart, $rangeEnd) = PHPExcel_Cell::rangeBoundaries($this->range);
+        [$rangeStart, $rangeEnd] = PHPExcel_Cell::rangeBoundaries($this->range);
 
         //    The heading row should always be visible
 //        echo 'AutoFilter Heading Row ', $rangeStart[1],' is always SHOWN',PHP_EOL;

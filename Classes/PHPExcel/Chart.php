@@ -665,7 +665,7 @@ class PHPExcel_Chart
         $libraryPath = PHPExcel_Settings::getChartRendererPath();
         $includePath = str_replace('\\', '/', get_include_path());
         $rendererPath = str_replace('\\', '/', $libraryPath);
-        if (strpos($rendererPath, $includePath) === false) {
+        if (!str_contains($rendererPath, $includePath)) {
             set_include_path(get_include_path() . PATH_SEPARATOR . $libraryPath);
         }
 

@@ -8,7 +8,6 @@ if (!defined('PHPEXCEL_ROOT')) {
     define('PHPEXCEL_ROOT', dirname(__FILE__) . '/../../');
     require(PHPEXCEL_ROOT . 'PHPExcel/Autoloader.php');
 }
-
 /**
  * PHPExcel_Calculation_MathTrig
  *
@@ -95,8 +94,8 @@ class PHPExcel_Calculation_MathTrig
         $xCoordinate = PHPExcel_Calculation_Functions::flattenSingleValue($xCoordinate);
         $yCoordinate = PHPExcel_Calculation_Functions::flattenSingleValue($yCoordinate);
 
-        $xCoordinate = ($xCoordinate !== null) ? $xCoordinate : 0.0;
-        $yCoordinate = ($yCoordinate !== null) ? $yCoordinate : 0.0;
+        $xCoordinate ??= 0.0;
+        $yCoordinate ??= 0.0;
 
         if (((is_numeric($xCoordinate)) || (is_bool($xCoordinate))) &&
             ((is_numeric($yCoordinate)))  || (is_bool($yCoordinate))) {
@@ -565,7 +564,7 @@ class PHPExcel_Calculation_MathTrig
         try {
             $matrix = new PHPExcel_Shared_JAMA_Matrix($matrixData);
             return $matrix->det();
-        } catch (PHPExcel_Exception $ex) {
+        } catch (PHPExcel_Exception) {
             return PHPExcel_Calculation_Functions::VALUE();
         }
     }
@@ -616,7 +615,7 @@ class PHPExcel_Calculation_MathTrig
         try {
             $matrix = new PHPExcel_Shared_JAMA_Matrix($matrixData);
             return $matrix->inverse()->getArray();
-        } catch (PHPExcel_Exception $ex) {
+        } catch (PHPExcel_Exception) {
             return PHPExcel_Calculation_Functions::VALUE();
         }
     }
@@ -1248,7 +1247,7 @@ class PHPExcel_Calculation_MathTrig
         foreach ($conditions as $index => $condition) {
             $aArgs = $aArgsArray[$index];
             $wildcard = false;
-            if ((strpos($condition, '*') !== false) || (strpos($condition, '?') !== false)) {
+            if ((str_contains($condition, '*')) || (str_contains($condition, '?'))) {
                 // * and ? are wildcard characters.
                 // Use ~* and ~? for literal star and question mark
                 // Code logic doesn't yet handle escaping

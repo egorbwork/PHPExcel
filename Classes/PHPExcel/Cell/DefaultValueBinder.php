@@ -89,7 +89,7 @@ class PHPExcel_Cell_DefaultValueBinder implements PHPExcel_Cell_IValueBinder
             $tValue = ltrim($pValue, '+-');
             if (is_string($pValue) && $tValue[0] === '0' && strlen($tValue) > 1 && $tValue[1] !== '.') {
                 return PHPExcel_Cell_DataType::TYPE_STRING;
-            } elseif ((strpos($pValue, '.') === false) && ($pValue > PHP_INT_MAX)) {
+            } elseif ((!str_contains($pValue, '.')) && ($pValue > PHP_INT_MAX)) {
                 return PHPExcel_Cell_DataType::TYPE_STRING;
             }
             return PHPExcel_Cell_DataType::TYPE_NUMERIC;

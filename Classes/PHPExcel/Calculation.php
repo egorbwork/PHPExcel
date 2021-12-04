@@ -2309,7 +2309,7 @@ class PHPExcel_Calculation
     {
         //    Identify our locale and language
         $language = $locale = strtolower($locale);
-        if (strpos($locale, '_') !== false) {
+        if (str_contains($locale, '_')) {
             [$language] = explode('_', $locale);
         }
 
@@ -2337,7 +2337,7 @@ class PHPExcel_Calculation
                 $localeFunctions = file($functionNamesFile, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
                 foreach ($localeFunctions as $localeFunction) {
                     [$localeFunction] = explode('##', $localeFunction);    //    Strip out comments
-                    if (strpos($localeFunction, '=') !== false) {
+                    if (str_contains($localeFunction, '=')) {
                         [$fName, $lfName] = explode('=', $localeFunction);
                         $fName = trim($fName);
                         $lfName = trim($lfName);
@@ -2362,7 +2362,7 @@ class PHPExcel_Calculation
                     $localeSettings = file($configFile, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
                     foreach ($localeSettings as $localeSetting) {
                         [$localeSetting] = explode('##', $localeSetting);    //    Strip out comments
-                        if (strpos($localeSetting, '=') !== false) {
+                        if (str_contains($localeSetting, '=')) {
                             [$settingName, $settingValue] = explode('=', $localeSetting);
                             $settingName = strtoupper(trim($settingName));
                             switch ($settingName) {
@@ -2412,7 +2412,7 @@ class PHPExcel_Calculation
         if (self::$localeLanguage !== 'en_us') {
             $inBraces = false;
             //    If there is the possibility of braces within a quoted string, then we don't treat those as matrix indicators
-            if (strpos($formula, '"') !== false) {
+            if (str_contains($formula, '"')) {
                 //    So instead we skip replacing in any quoted strings by only replacing in every other array element after we've exploded
                 //        the formula
                 $temp = explode('"', $formula);
@@ -2861,10 +2861,10 @@ class PHPExcel_Calculation
      */
     private static function getMatrixDimensions(&$matrix)
     {
-        $matrixRows = count($matrix);
+        $matrixRows = is_countable($matrix) ? count($matrix) : 0;
         $matrixColumns = 0;
         foreach ($matrix as $rowKey => $rowValue) {
-            $matrixColumns = max(count($rowValue), $matrixColumns);
+            $matrixColumns = max(is_countable($rowValue) ? count($rowValue) : 0, $matrixColumns);
             if (!is_array($rowValue)) {
                 $matrix[$rowKey] = array($rowValue);
             } else {
@@ -3048,9 +3048,9 @@ class PHPExcel_Calculation
         static $matrixReplaceTo = array('MKMATRIX(MKMATRIX(', '),MKMATRIX(', '))');
 
         //    Convert any Excel matrix references to the MKMATRIX() function
-        if (strpos($formula, '{') !== false) {
+        if (str_contains($formula, '{')) {
             //    If there is the possibility of braces within a quoted string, then we don't treat those as matrix indicators
-            if (strpos($formula, '"') !== false) {
+            if (str_contains($formula, '"')) {
                 //    So instead we skip replacing in any quoted strings by only replacing in every other array element after we've exploded
                 //        the formula
                 $temp = explode('"', $formula);
@@ -3370,14 +3370,14 @@ class PHPExcel_Calculation
                     if ($testPrevOp['value'] == ':') {
                         $startRowColRef = $output[count($output)-1]['value'];
                         $rangeWS1 = '';
-                        if (strpos('!', $startRowColRef) !== false) {
+                        if (str_contains('!', $startRowColRef)) {
                             [$rangeWS1, $startRowColRef] = explode('!', $startRowColRef);
                         }
                         if ($rangeWS1 != '') {
                             $rangeWS1 .= '!';
                         }
                         $rangeWS2 = $rangeWS1;
-                        if (strpos('!', $val) !== false) {
+                        if (str_contains('!', $val)) {
                             [$rangeWS2, $val] = explode('!', $val);
                         }
                         if ($rangeWS2 != '') {
@@ -3405,7 +3405,7 @@ class PHPExcel_Calculation
                         $val = self::wrapResult(str_replace('""', '"', self::unwrapResult($val)));
                     } elseif (is_numeric($val)) {
 //                        echo 'Element is a Number<br />';
-                        if ((strpos($val, '.') !== false) || (stripos($val, 'e') !== false) || ($val > PHP_INT_MAX) || ($val < -PHP_INT_MAX)) {
+                        if ((str_contains($val, '.')) || (stripos($val, 'e') !== false) || ($val > PHP_INT_MAX) || ($val < -PHP_INT_MAX)) {
 //                            echo 'Casting '.$val.' to float<br />';
                             $val = (float) $val;
                         } else {
@@ -3558,12 +3558,12 @@ class PHPExcel_Calculation
                     //    Binary Operators
                     case ':':            //    Range
                         $sheet1 = $sheet2 = '';
-                        if (strpos($operand1Data['reference'], '!') !== false) {
+                        if (str_contains($operand1Data['reference'], '!')) {
                             [$sheet1, $operand1Data['reference']] = explode('!', $operand1Data['reference']);
                         } else {
                             $sheet1 = ($pCellParent !== null) ? $pCellWorksheet->getTitle() : '';
                         }
-                        if (strpos($operand2Data['reference'], '!') !== false) {
+                        if (str_contains($operand2Data['reference'], '!')) {
                             [$sheet2, $operand2Data['reference']] = explode('!', $operand2Data['reference']);
                         } else {
                             $sheet2 = $sheet1;
@@ -3645,7 +3645,7 @@ class PHPExcel_Calculation
                                 $result = '#VALUE!';
                             }
                         } else {
-                            $result = '"'.str_replace('""', '"', self::unwrapResult($operand1, '"').self::unwrapResult($operand2, '"')).'"';
+                            $result = '"'.str_replace('""', '"', self::unwrapResult($operand1).self::unwrapResult($operand2)).'"';
                         }
                         $this->_debugLog->writeDebugLog('Evaluation Result is ', $this->showTypeDetails($result));
                         $stack->push('Value', $result);
@@ -3710,7 +3710,7 @@ class PHPExcel_Calculation
                         $cellRef = $matches[6].$matches[7].':'.$matches[9].$matches[10];
                         if ($matches[2] > '') {
                             $matches[2] = trim($matches[2], "\"'");
-                            if ((strpos($matches[2], '[') !== false) || (strpos($matches[2], ']') !== false)) {
+                            if ((str_contains($matches[2], '[')) || (str_contains($matches[2], ']'))) {
                                 //    It's a Reference to an external workbook (not currently supported)
                                 return $this->raiseFormulaError('Unable to access External Workbook');
                             }
@@ -3744,7 +3744,7 @@ class PHPExcel_Calculation
                         $cellRef = $matches[6].$matches[7];
                         if ($matches[2] > '') {
                             $matches[2] = trim($matches[2], "\"'");
-                            if ((strpos($matches[2], '[') !== false) || (strpos($matches[2], ']') !== false)) {
+                            if ((str_contains($matches[2], '[')) || (str_contains($matches[2], ']'))) {
                                 //    It's a Reference to an external workbook (not currently supported)
                                 return $this->raiseFormulaError('Unable to access External Workbook');
                             }
@@ -3866,7 +3866,7 @@ class PHPExcel_Calculation
                     if ($passCellReference) {
                         $args[] = $pCell;
                     }
-                    if (strpos($functionCall, '::') !== false) {
+                    if (str_contains($functionCall, '::')) {
                         $result = call_user_func_array(explode('::', $functionCall), $args);
                     } else {
                         foreach ($args as &$arg) {
@@ -4196,7 +4196,7 @@ class PHPExcel_Calculation
             $pSheetName = $pSheet->getTitle();
 //            echo 'Passed sheet name is '.$pSheetName.PHP_EOL;
 //            echo 'Range reference is '.$pRange.PHP_EOL;
-            if (strpos($pRange, '!') !== false) {
+            if (str_contains($pRange, '!')) {
 //                echo '$pRange reference includes sheet reference', PHP_EOL;
                 [$pSheetName, $pRange] = PHPExcel_Worksheet::extractSheetTitle($pRange, true);
 //                echo 'New sheet name is '.$pSheetName, PHP_EOL;
@@ -4254,7 +4254,7 @@ class PHPExcel_Calculation
             $pSheetName = $pSheet->getTitle();
 //            echo 'Current sheet name is '.$pSheetName.'<br />';
 //            echo 'Range reference is '.$pRange.'<br />';
-            if (strpos($pRange, '!') !== false) {
+            if (str_contains($pRange, '!')) {
 //                echo '$pRange reference includes sheet reference', PHP_EOL;
                 [$pSheetName, $pRange] = PHPExcel_Worksheet::extractSheetTitle($pRange, true);
 //                echo 'New sheet name is '.$pSheetName, PHP_EOL;

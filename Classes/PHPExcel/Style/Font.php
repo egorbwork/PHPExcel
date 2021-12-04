@@ -270,7 +270,7 @@ class PHPExcel_Style_Font extends PHPExcel_Style_Supervisor implements PHPExcel_
      */
     public function setSize($pValue = 10)
     {
-        if ($pValue == '') {
+        if ($pValue == 0) {
             $pValue = 10;
         }
         if ($this->isSupervisor) {

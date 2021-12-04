@@ -77,7 +77,7 @@ class PHPExcel_Writer_Excel5_Escher
         // initialize
         $this->data = '';
 
-        switch (get_class($this->object)) {
+        switch ($this->object::class) {
             case 'PHPExcel_Shared_Escher':
                 if ($dggContainer = $this->object->getDggContainer()) {
                     $writer = new PHPExcel_Writer_Excel5_Escher($dggContainer);
@@ -296,7 +296,7 @@ class PHPExcel_Writer_Excel5_Escher
                 $header = pack('vvV', $recVerInstance, $recType, $length);
 
                 // number of shapes in this drawing (including group shape)
-                $countShapes = count($this->object->getSpgrContainer()->getChildren());
+                $countShapes = is_countable($this->object->getSpgrContainer()->getChildren()) ? count($this->object->getSpgrContainer()->getChildren()) : 0;
                 $innerData .= $header . pack('VV', $countShapes, $this->object->getLastSpId());
                 //$innerData .= $header . pack('VV', 0, 0);
 
@@ -434,7 +434,7 @@ class PHPExcel_Writer_Excel5_Escher
                     $recType        = 0xF010;
 
                     // start coordinates
-                    list($column, $row) = PHPExcel_Cell::coordinateFromString($this->object->getStartCoordinates());
+                    [$column, $row] = PHPExcel_Cell::coordinateFromString($this->object->getStartCoordinates());
                     $c1 = PHPExcel_Cell::columnIndexFromString($column) - 1;
                     $r1 = $row - 1;
 
@@ -445,7 +445,7 @@ class PHPExcel_Writer_Excel5_Escher
                     $startOffsetY = $this->object->getStartOffsetY();
 
                     // end coordinates
-                    list($column, $row) = PHPExcel_Cell::coordinateFromString($this->object->getEndCoordinates());
+                    [$column, $row] = PHPExcel_Cell::coordinateFromString($this->object->getEndCoordinates());
                     $c2 = PHPExcel_Cell::columnIndexFromString($column) - 1;
                     $r2 = $row - 1;
 

@@ -241,7 +241,7 @@ class PHPExcel_Calculation_FormulaParser
             }
 
             // scientific notation check
-            if (strpos(PHPExcel_Calculation_FormulaParser::OPERATORS_SN, $this->formula[$index]) !== false) {
+            if (str_contains(PHPExcel_Calculation_FormulaParser::OPERATORS_SN, $this->formula[$index])) {
                 if (strlen($value) > 1) {
                     if (preg_match("/^[1-9]{1}(\.[0-9]+)?E{1}$/", $this->formula[$index]) != 0) {
                         $value .= $this->formula[$index];
@@ -385,7 +385,7 @@ class PHPExcel_Calculation_FormulaParser
             }
 
             // standard infix operators
-            if (strpos(PHPExcel_Calculation_FormulaParser::OPERATORS_INFIX, $this->formula[$index]) !== false) {
+            if (str_contains(PHPExcel_Calculation_FormulaParser::OPERATORS_INFIX, $this->formula[$index])) {
                 if (strlen($value) > 0) {
                     $tokens1[] =new PHPExcel_Calculation_FormulaToken($value, PHPExcel_Calculation_FormulaToken::TOKEN_TYPE_OPERAND);
                     $value = "";
@@ -396,7 +396,7 @@ class PHPExcel_Calculation_FormulaParser
             }
 
             // standard postfix operators (only one)
-            if (strpos(PHPExcel_Calculation_FormulaParser::OPERATORS_POSTFIX, $this->formula[$index]) !== false) {
+            if (str_contains(PHPExcel_Calculation_FormulaParser::OPERATORS_POSTFIX, $this->formula[$index])) {
                 if (strlen($value) > 0) {
                     $tokens1[] = new PHPExcel_Calculation_FormulaToken($value, PHPExcel_Calculation_FormulaToken::TOKEN_TYPE_OPERAND);
                     $value = "";
@@ -580,7 +580,7 @@ class PHPExcel_Calculation_FormulaParser
 
             if ($token->getTokenType() == PHPExcel_Calculation_FormulaToken::TOKEN_TYPE_OPERATORINFIX &&
                 $token->getTokenSubType() == PHPExcel_Calculation_FormulaToken::TOKEN_SUBTYPE_NOTHING) {
-                if (strpos("<>=", substr($token->getValue(), 0, 1)) !== false) {
+                if (str_contains("<>=", substr($token->getValue(), 0, 1))) {
                     $token->setTokenSubType(PHPExcel_Calculation_FormulaToken::TOKEN_SUBTYPE_LOGICAL);
                 } elseif ($token->getValue() == "&") {
                     $token->setTokenSubType(PHPExcel_Calculation_FormulaToken::TOKEN_SUBTYPE_CONCATENATION);

@@ -671,11 +671,11 @@ class PHPExcel_Worksheet_PageSetup
      */
     public function setPrintArea($value, $index = 0, $method = self::SETPRINTRANGE_OVERWRITE)
     {
-        if (strpos($value, '!') !== false) {
+        if (str_contains($value, '!')) {
             throw new PHPExcel_Exception('Cell coordinate must not specify a worksheet.');
-        } elseif (strpos($value, ':') === false) {
+        } elseif (!str_contains($value, ':')) {
             throw new PHPExcel_Exception('Cell coordinate must be a range of cells.');
-        } elseif (strpos($value, '$') !== false) {
+        } elseif (str_contains($value, '$')) {
             throw new PHPExcel_Exception('Cell coordinate must not be absolute.');
         }
         $value = strtoupper($value);
@@ -705,7 +705,7 @@ class PHPExcel_Worksheet_PageSetup
                 if ($index > count($printAreas)) {
                     throw new PHPExcel_Exception('Invalid index for setting print range.');
                 }
-                $printAreas = array_merge(array_slice($printAreas, 0, $index), array($value), array_slice($printAreas, $index));
+                $printAreas = [...array_slice($printAreas, 0, $index), ...array($value), ...array_slice($printAreas, $index)];
                 $this->printArea = implode(',', $printAreas);
             }
         } else {

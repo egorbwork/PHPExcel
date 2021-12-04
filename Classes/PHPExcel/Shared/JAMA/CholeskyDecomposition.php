@@ -136,7 +136,7 @@ class CholeskyDecomposition
 
                     return new Matrix($X, $this->m, $nx);
                 } else {
-                    throw new PHPExcel_Calculation_Exception(JAMAError(MatrixSPDException));
+                    throw new PHPExcel_Calculation_Exception(JAMAError(\MATRIXSPDEXCEPTION));
                 }
             } else {
                 throw new PHPExcel_Calculation_Exception(JAMAError(MATRIX_DIMENSION_EXCEPTION));

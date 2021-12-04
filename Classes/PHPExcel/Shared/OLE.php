@@ -206,7 +206,8 @@ class PHPExcel_Shared_OLE
         // in OLE_ChainedBlockStream::stream_open().
         // Object is removed from self::$instances in OLE_Stream::close().
         $GLOBALS['_OLE_INSTANCES'][] = $this;
-        $instanceId = end(array_keys($GLOBALS['_OLE_INSTANCES']));
+        $arrayKeys = array_keys($GLOBALS['_OLE_INSTANCES']);
+        $instanceId = end($arrayKeys);
 
         $path = 'ole-chainedblockstream://oleInstanceId=' . $instanceId;
         if ($blockIdOrPps instanceof PHPExcel_Shared_OLE_PPS) {
@@ -226,7 +227,7 @@ class PHPExcel_Shared_OLE
      */
     private static function _readInt1($fh)
     {
-        list(, $tmp) = unpack("c", fread($fh, 1));
+        [, $tmp] = unpack("c", fread($fh, 1));
         return $tmp;
     }
 
@@ -238,7 +239,7 @@ class PHPExcel_Shared_OLE
      */
     private static function _readInt2($fh)
     {
-        list(, $tmp) = unpack("v", fread($fh, 2));
+        [, $tmp] = unpack("v", fread($fh, 2));
         return $tmp;
     }
 
@@ -250,7 +251,7 @@ class PHPExcel_Shared_OLE
      */
     private static function _readInt4($fh)
     {
-        list(, $tmp) = unpack("V", fread($fh, 4));
+        [, $tmp] = unpack("V", fread($fh, 4));
         return $tmp;
     }
 
@@ -509,8 +510,8 @@ class PHPExcel_Shared_OLE
 
         // factor used for separating numbers into 4 bytes parts
         $factor = pow(2, 32);
-        list(, $high_part) = unpack('V', substr($string, 4, 4));
-        list(, $low_part) = unpack('V', substr($string, 0, 4));
+        [, $high_part] = unpack('V', substr($string, 4, 4));
+        [, $low_part] = unpack('V', substr($string, 0, 4));
 
         $big_date = ($high_part * $factor) + $low_part;
         // translate to seconds

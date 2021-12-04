@@ -226,7 +226,7 @@ class PHPExcel_Shared_Excel5
      */
     public static function oneAnchor2twoAnchor($sheet, $coordinates, $offsetX, $offsetY, $width, $height)
     {
-        list($column, $row) = PHPExcel_Cell::coordinateFromString($coordinates);
+        [$column, $row] = PHPExcel_Cell::coordinateFromString($coordinates);
         $col_start = PHPExcel_Cell::columnIndexFromString($column) - 1;
         $row_start = $row - 1;
 

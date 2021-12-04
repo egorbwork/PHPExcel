@@ -54,7 +54,7 @@ class PHPExcel_Writer_PDF implements PHPExcel_Writer_IWriter
         }
         $includePath = str_replace('\\', '/', get_include_path());
         $rendererPath = str_replace('\\', '/', $pdfLibraryPath);
-        if (strpos($rendererPath, $includePath) === false) {
+        if (!str_contains($rendererPath, $includePath)) {
             set_include_path(get_include_path() . PATH_SEPARATOR . $pdfLibraryPath);
         }
 

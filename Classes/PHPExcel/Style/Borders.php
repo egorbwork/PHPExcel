@@ -394,7 +394,7 @@ class PHPExcel_Style_Borders extends PHPExcel_Style_Supervisor implements PHPExc
      */
     public function setDiagonalDirection($pValue = PHPExcel_Style_Borders::DIAGONAL_NONE)
     {
-        if ($pValue == '') {
+        if ($pValue == 0) {
             $pValue = PHPExcel_Style_Borders::DIAGONAL_NONE;
         }
         if ($this->isSupervisor) {

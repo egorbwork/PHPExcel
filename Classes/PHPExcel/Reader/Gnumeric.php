@@ -289,7 +289,7 @@ class PHPExcel_Reader_Gnumeric extends PHPExcel_Reader_Abstract implements PHPEx
                             $docProps->setModified($creationDate);
                             break;
                         case 'user-defined':
-                            list(, $attrName) = explode(':', $attributes['name']);
+                            [, $attrName] = explode(':', $attributes['name']);
                             switch ($attrName) {
                                 case 'publisher':
                                     $docProps->setCompany(trim($propertyValue));
@@ -694,7 +694,7 @@ class PHPExcel_Reader_Gnumeric extends PHPExcel_Reader_Abstract implements PHPEx
                     $column = $columnAttributes['No'];
                     $columnWidth = $columnAttributes['Unit']  / 5.4;
                     $hidden = ((isset($columnAttributes['Hidden'])) && ($columnAttributes['Hidden'] == '1')) ? true : false;
-                    $columnCount = (isset($columnAttributes['Count'])) ? $columnAttributes['Count'] : 1;
+                    $columnCount = $columnAttributes['Count'] ?? 1;
                     while ($c < $column) {
                         $objPHPExcel->getActiveSheet()->getColumnDimension(PHPExcel_Cell::stringFromColumnIndex($c))->setWidth($defaultWidth);
                         ++$c;
@@ -724,7 +724,7 @@ class PHPExcel_Reader_Gnumeric extends PHPExcel_Reader_Abstract implements PHPEx
                     $row = $rowAttributes['No'];
                     $rowHeight = $rowAttributes['Unit'];
                     $hidden = ((isset($rowAttributes['Hidden'])) && ($rowAttributes['Hidden'] == '1')) ? true : false;
-                    $rowCount = (isset($rowAttributes['Count'])) ? $rowAttributes['Count'] : 1;
+                    $rowCount = $rowAttributes['Count'] ?? 1;
                     while ($r < $row) {
                         ++$r;
                         $objPHPExcel->getActiveSheet()->getRowDimension($r)->setRowHeight($defaultHeight);
@@ -746,7 +746,7 @@ class PHPExcel_Reader_Gnumeric extends PHPExcel_Reader_Abstract implements PHPEx
             //    Handle Merged Cells in this worksheet
             if (isset($sheet->MergedRegions)) {
                 foreach ($sheet->MergedRegions->Merge as $mergeCells) {
-                    if (strpos($mergeCells, ':') !== false) {
+                    if (str_contains($mergeCells, ':')) {
                         $objPHPExcel->getActiveSheet()->mergeCells($mergeCells);
                     }
                 }
@@ -841,7 +841,7 @@ class PHPExcel_Reader_Gnumeric extends PHPExcel_Reader_Abstract implements PHPEx
 
     private static function parseGnumericColour($gnmColour)
     {
-        list($gnmR, $gnmG, $gnmB) = explode(':', $gnmColour);
+        [$gnmR, $gnmG, $gnmB] = explode(':', $gnmColour);
         $gnmR = substr(str_pad($gnmR, 4, '0', STR_PAD_RIGHT), 0, 2);
         $gnmG = substr(str_pad($gnmG, 4, '0', STR_PAD_RIGHT), 0, 2);
         $gnmB = substr(str_pad($gnmB, 4, '0', STR_PAD_RIGHT), 0, 2);

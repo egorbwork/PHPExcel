@@ -879,7 +879,7 @@ class PHPExcel_Writer_Excel5_Parser
         // assume all references belong to this document
         $supbook_index = 0x00;
         $ref = pack('vvv', $supbook_index, $sheet1, $sheet2);
-        $totalreferences = count($this->references);
+        $totalreferences = count((array) $this->references);
         $index = -1;
         for ($i = 0; $i < $totalreferences; ++$i) {
             if ($ref == $this->references[$i]) {
@@ -1172,7 +1172,7 @@ class PHPExcel_Writer_Excel5_Parser
     {
         $this->currentCharacter = 0;
         $this->formula      = $formula;
-        $this->lookAhead    = isset($formula[1]) ? $formula[1] : '';
+        $this->lookAhead    = $formula[1] ?? '';
         $this->advance();
         $this->parseTree   = $this->condition();
         return true;

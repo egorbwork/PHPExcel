@@ -2491,7 +2491,7 @@ class PHPExcel_Calculation_Engineering
         foreach (self::$conversionUnits as $conversionUnit) {
             $conversionGroups[] = $conversionUnit['Group'];
         }
-        return array_merge(array_unique($conversionGroups));
+        return [...array_unique($conversionGroups)];
     }
 
 

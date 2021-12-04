@@ -216,11 +216,11 @@ class PHPExcel_Style extends PHPExcel_Style_Supervisor implements PHPExcel_IComp
                 $pRange = strtoupper($pRange);
 
                 // Is it a cell range or a single cell?
-                if (strpos($pRange, ':') === false) {
+                if (!str_contains($pRange, ':')) {
                     $rangeA = $pRange;
                     $rangeB = $pRange;
                 } else {
-                    list($rangeA, $rangeB) = explode(':', $pRange);
+                    [$rangeA, $rangeB] = explode(':', $pRange);
                 }
 
                 // Calculate range outer borders
@@ -422,8 +422,7 @@ class PHPExcel_Style extends PHPExcel_Style_Supervisor implements PHPExcel_IComp
                     case 'ROW':
                         for ($row = $rangeStart[1]; $row <= $rangeEnd[1]; ++$row) {
                             $rowDimension = $this->getActiveSheet()->getRowDimension($row);
-                            $oldXfIndex = $rowDimension->getXfIndex() === null ?
-                                0 : $rowDimension->getXfIndex(); // row without explicit style should be formatted based on default style
+                            $oldXfIndex = $rowDimension->getXfIndex() ?? 0; // row without explicit style should be formatted based on default style
                             $rowDimension->setXfIndex($newXfIndexes[$oldXfIndex]);
                         }
                         break;

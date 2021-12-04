@@ -89,9 +89,9 @@ class PHPExcel_Shared_OLE_PPS_Root extends PHPExcel_Shared_OLE_PPS
         }
         // Make an array of PPS's (for Save)
         $aList = array();
-        PHPExcel_Shared_OLE_PPS::_savePpsSetPnt($aList, array($this));
+        parent::_savePpsSetPnt($aList, array($this));
         // calculate values for header
-        list($iSBDcnt, $iBBcnt, $iPPScnt) = $this->_calcSize($aList); //, $rhInfo);
+        [$iSBDcnt, $iBBcnt, $iPPScnt] = $this->_calcSize($aList); //, $rhInfo);
         // Save Header
         $this->_saveHeader($iSBDcnt, $iBBcnt, $iPPScnt);
 
@@ -122,7 +122,7 @@ class PHPExcel_Shared_OLE_PPS_Root extends PHPExcel_Shared_OLE_PPS
     public function _calcSize(&$raList)
     {
         // Calculate Basic Setting
-        list($iSBDcnt, $iBBcnt, $iPPScnt) = array(0,0,0);
+        [$iSBDcnt, $iBBcnt, $iPPScnt] = array(0,0,0);
         $iSmallLen = 0;
         $iSBcnt = 0;
         $iCount = count($raList);

@@ -346,7 +346,7 @@ class PHPExcel_Calculation_Statistical
         $y = $x;
         if ($y > 0.0 && $y <= LOG_GAMMA_X_MAX_VALUE) {
             if ($y <= EPS) {
-                $res = -log(y);
+                $res = -log(\Y);
             } elseif ($y <= 1.5) {
                 // ---------------------
                 //    EPS .LT. X .LE. 1.5
@@ -677,7 +677,7 @@ class PHPExcel_Calculation_Statistical
         $q = $p - 0.5;
 
         //    computation for p close to 0.5
-        if (abs($q) <= split1) {
+        if (abs($q) <= \SPLIT1) {
             $R = $const1 - $q * $q;
             $z = $q * ((((((($a7 * $R + $a6) * $R + $a5) * $R + $a4) * $R + $a3) * $R + $a2) * $R + $a1) * $R + $a0) /
                       ((((((($b7 * $R + $b6) * $R + $b5) * $R + $b4) * $R + $b3) * $R + $b2) * $R + $b1) * $R + 1);
@@ -1167,8 +1167,8 @@ class PHPExcel_Calculation_Statistical
         if (!self::checkTrendArrays($yValues, $xValues)) {
             return PHPExcel_Calculation_Functions::VALUE();
         }
-        $yValueCount = count($yValues);
-        $xValueCount = count($xValues);
+        $yValueCount = is_countable($yValues) ? count($yValues) : 0;
+        $xValueCount = is_countable($xValues) ? count($xValues) : 0;
 
         if (($yValueCount == 0) || ($yValueCount != $xValueCount)) {
             return PHPExcel_Calculation_Functions::NA();
@@ -1325,8 +1325,8 @@ class PHPExcel_Calculation_Statistical
         if (!self::checkTrendArrays($yValues, $xValues)) {
             return PHPExcel_Calculation_Functions::VALUE();
         }
-        $yValueCount = count($yValues);
-        $xValueCount = count($xValues);
+        $yValueCount = is_countable($yValues) ? count($yValues) : 0;
+        $xValueCount = is_countable($xValues) ? count($xValues) : 0;
 
         if (($yValueCount == 0) || ($yValueCount != $xValueCount)) {
             return PHPExcel_Calculation_Functions::NA();
@@ -1611,8 +1611,8 @@ class PHPExcel_Calculation_Statistical
         } elseif (!self::checkTrendArrays($yValues, $xValues)) {
             return PHPExcel_Calculation_Functions::VALUE();
         }
-        $yValueCount = count($yValues);
-        $xValueCount = count($xValues);
+        $yValueCount = is_countable($yValues) ? count($yValues) : 0;
+        $xValueCount = is_countable($xValues) ? count($xValues) : 0;
 
         if (($yValueCount == 0) || ($yValueCount != $xValueCount)) {
             return PHPExcel_Calculation_Functions::NA();
@@ -1906,8 +1906,8 @@ class PHPExcel_Calculation_Statistical
         if (!self::checkTrendArrays($yValues, $xValues)) {
             return PHPExcel_Calculation_Functions::VALUE();
         }
-        $yValueCount = count($yValues);
-        $xValueCount = count($xValues);
+        $yValueCount = is_countable($yValues) ? count($yValues) : 0;
+        $xValueCount = is_countable($xValues) ? count($xValues) : 0;
 
         if (($yValueCount == 0) || ($yValueCount != $xValueCount)) {
             return PHPExcel_Calculation_Functions::NA();
@@ -2027,8 +2027,8 @@ class PHPExcel_Calculation_Statistical
         if (!self::checkTrendArrays($yValues, $xValues)) {
             return PHPExcel_Calculation_Functions::VALUE();
         }
-        $yValueCount = count($yValues);
-        $xValueCount = count($xValues);
+        $yValueCount = is_countable($yValues) ? count($yValues) : 0;
+        $xValueCount = is_countable($xValues) ? count($xValues) : 0;
 
 
         if (($yValueCount == 0) || ($yValueCount != $xValueCount)) {
@@ -2087,8 +2087,8 @@ class PHPExcel_Calculation_Statistical
         if (!self::checkTrendArrays($yValues, $xValues)) {
             return PHPExcel_Calculation_Functions::VALUE();
         }
-        $yValueCount = count($yValues);
-        $xValueCount = count($xValues);
+        $yValueCount = is_countable($yValues) ? count($yValues) : 0;
+        $xValueCount = is_countable($xValues) ? count($xValues) : 0;
 
         foreach ($yValues as $value) {
             if ($value <= 0.0) {
@@ -2919,8 +2919,8 @@ class PHPExcel_Calculation_Statistical
         if (!self::checkTrendArrays($yValues, $xValues)) {
             return PHPExcel_Calculation_Functions::VALUE();
         }
-        $yValueCount = count($yValues);
-        $xValueCount = count($xValues);
+        $yValueCount = is_countable($yValues) ? count($yValues) : 0;
+        $xValueCount = is_countable($xValues) ? count($xValues) : 0;
 
         if (($yValueCount == 0) || ($yValueCount != $xValueCount)) {
             return PHPExcel_Calculation_Functions::NA();
@@ -2985,8 +2985,8 @@ class PHPExcel_Calculation_Statistical
         if (!self::checkTrendArrays($yValues, $xValues)) {
             return PHPExcel_Calculation_Functions::VALUE();
         }
-        $yValueCount = count($yValues);
-        $xValueCount = count($xValues);
+        $yValueCount = is_countable($yValues) ? count($yValues) : 0;
+        $xValueCount = is_countable($xValues) ? count($xValues) : 0;
 
         if (($yValueCount == 0) || ($yValueCount != $xValueCount)) {
             return PHPExcel_Calculation_Functions::NA();
@@ -3278,8 +3278,8 @@ class PHPExcel_Calculation_Statistical
         if (!self::checkTrendArrays($yValues, $xValues)) {
             return PHPExcel_Calculation_Functions::VALUE();
         }
-        $yValueCount = count($yValues);
-        $xValueCount = count($xValues);
+        $yValueCount = is_countable($yValues) ? count($yValues) : 0;
+        $xValueCount = is_countable($xValues) ? count($xValues) : 0;
 
         if (($yValueCount == 0) || ($yValueCount != $xValueCount)) {
             return PHPExcel_Calculation_Functions::NA();

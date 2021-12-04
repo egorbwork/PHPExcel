@@ -790,7 +790,7 @@ class PHPExcel_Shared_String
     public static function SYLKtoUTF8($pValue = '')
     {
         // If there is no escape character in the string there is nothing to do
-        if (strpos($pValue, '') === false) {
+        if (!str_contains($pValue, '')) {
             return $pValue;
         }
 

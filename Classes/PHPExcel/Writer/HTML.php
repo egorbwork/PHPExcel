@@ -1514,14 +1514,14 @@ class PHPExcel_Writer_HTML extends PHPExcel_Writer_Abstract implements PHPExcel_
 
             // loop through all Excel merged cells
             foreach ($sheet->getMergeCells() as $cells) {
-                list($cells,) = PHPExcel_Cell::splitRange($cells);
+                [$cells, ] = PHPExcel_Cell::splitRange($cells);
                 $first = $cells[0];
                 $last  = $cells[1];
 
-                list($fc, $fr) = PHPExcel_Cell::coordinateFromString($first);
+                [$fc, $fr] = PHPExcel_Cell::coordinateFromString($first);
                 $fc = PHPExcel_Cell::columnIndexFromString($fc) - 1;
 
-                list($lc, $lr) = PHPExcel_Cell::coordinateFromString($last);
+                [$lc, $lr] = PHPExcel_Cell::coordinateFromString($last);
                 $lc = PHPExcel_Cell::columnIndexFromString($lc) - 1;
 
                 // loop through the individual cells in the individual merge
@@ -1555,7 +1555,7 @@ class PHPExcel_Writer_HTML extends PHPExcel_Writer_Abstract implements PHPExcel_
             $countColumns = PHPExcel_Cell::columnIndexFromString($sheet->getHighestColumn());
             foreach ($candidateSpannedRow as $rowIndex) {
                 if (isset($this->isSpannedCell[$sheetIndex][$rowIndex])) {
-                    if (count($this->isSpannedCell[$sheetIndex][$rowIndex]) == $countColumns) {
+                    if ((is_countable($this->isSpannedCell[$sheetIndex][$rowIndex]) ? count($this->isSpannedCell[$sheetIndex][$rowIndex]) : 0) == $countColumns) {
                         $this->isSpannedRow[$sheetIndex][$rowIndex] = $rowIndex;
                     };
                 }

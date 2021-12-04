@@ -190,7 +190,7 @@ class PHPExcel_Writer_Excel2007_Comments extends PHPExcel_Writer_Excel2007_Write
     private function writeVMLComment(PHPExcel_Shared_XMLWriter $objWriter = null, $pCellReference = 'A1', PHPExcel_Comment $pComment = null)
     {
          // Metadata
-         list($column, $row) = PHPExcel_Cell::coordinateFromString($pCellReference);
+         [$column, $row] = PHPExcel_Cell::coordinateFromString($pCellReference);
          $column = PHPExcel_Cell::columnIndexFromString($column);
          $id = 1024 + $column + $row;
          $id = substr($id, 0, 4);

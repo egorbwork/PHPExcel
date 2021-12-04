@@ -461,7 +461,7 @@ class PHPExcel_Writer_Excel5 extends PHPExcel_Writer_Abstract implements PHPExce
                 if ($drawing instanceof PHPExcel_Worksheet_Drawing) {
                     $filename = $drawing->getPath();
 
-                    list($imagesx, $imagesy, $imageFormat) = getimagesize($filename);
+                    [$imagesx, $imagesy, $imageFormat] = getimagesize($filename);
 
                     switch ($imageFormat) {
                         case 1: // GIF, not supported by BIFF8, we convert to PNG

@@ -69,7 +69,7 @@ class PHPExcel_Calculation_LookupRef
         }
 
         if ($sheetText > '') {
-            if (strpos($sheetText, ' ') !== false) {
+            if (str_contains($sheetText, ' ')) {
                 $sheetText = "'".$sheetText."'";
             }
             $sheetText .='!';
@@ -122,11 +122,11 @@ class PHPExcel_Calculation_LookupRef
                 return (integer) PHPExcel_Cell::columnIndexFromString($columnKey);
             }
         } else {
-            if (strpos($cellAddress, '!') !== false) {
-                list($sheet, $cellAddress) = explode('!', $cellAddress);
+            if (str_contains($cellAddress, '!')) {
+                [$sheet, $cellAddress] = explode('!', $cellAddress);
             }
-            if (strpos($cellAddress, ':') !== false) {
-                list($startAddress, $endAddress) = explode(':', $cellAddress);
+            if (str_contains($cellAddress, ':')) {
+                [$startAddress, $endAddress] = explode(':', $cellAddress);
                 $startAddress = preg_replace('/[^a-z]/i', '', $startAddress);
                 $endAddress = preg_replace('/[^a-z]/i', '', $endAddress);
                 $returnValue = array();
@@ -160,10 +160,8 @@ class PHPExcel_Calculation_LookupRef
         } elseif (!is_array($cellAddress)) {
             return PHPExcel_Calculation_Functions::VALUE();
         }
-
-        reset($cellAddress);
-        $isMatrix = (is_numeric(key($cellAddress)));
-        list($columns, $rows) = PHPExcel_Calculation::_getMatrixDimensions($cellAddress);
+        $isMatrix = (is_numeric(array_key_first($cellAddress)));
+        [$columns, $rows] = PHPExcel_Calculation::_getMatrixDimensions($cellAddress);
 
         if ($isMatrix) {
             return $rows;
@@ -200,11 +198,11 @@ class PHPExcel_Calculation_LookupRef
                 }
             }
         } else {
-            if (strpos($cellAddress, '!') !== false) {
-                list($sheet, $cellAddress) = explode('!', $cellAddress);
+            if (str_contains($cellAddress, '!')) {
+                [$sheet, $cellAddress] = explode('!', $cellAddress);
             }
-            if (strpos($cellAddress, ':') !== false) {
-                list($startAddress, $endAddress) = explode(':', $cellAddress);
+            if (str_contains($cellAddress, ':')) {
+                [$startAddress, $endAddress] = explode(':', $cellAddress);
                 $startAddress = preg_replace('/[^0-9]/', '', $startAddress);
                 $endAddress = preg_replace('/[^0-9]/', '', $endAddress);
                 $returnValue = array();
@@ -213,7 +211,7 @@ class PHPExcel_Calculation_LookupRef
                 } while ($startAddress++ != $endAddress);
                 return $returnValue;
             } else {
-                list($cellAddress) = explode(':', $cellAddress);
+                [$cellAddress] = explode(':', $cellAddress);
                 return (integer) preg_replace('/[^0-9]/', '', $cellAddress);
             }
         }
@@ -238,10 +236,8 @@ class PHPExcel_Calculation_LookupRef
         } elseif (!is_array($cellAddress)) {
             return PHPExcel_Calculation_Functions::VALUE();
         }
-
-        reset($cellAddress);
-        $isMatrix = (is_numeric(key($cellAddress)));
-        list($columns, $rows) = PHPExcel_Calculation::_getMatrixDimensions($cellAddress);
+        $isMatrix = (is_numeric(array_key_first($cellAddress)));
+        [$columns, $rows] = PHPExcel_Calculation::_getMatrixDimensions($cellAddress);
 
         if ($isMatrix) {
             return $columns;
@@ -314,8 +310,8 @@ class PHPExcel_Calculation_LookupRef
 
         $cellAddress1 = $cellAddress;
         $cellAddress2 = null;
-        if (strpos($cellAddress, ':') !== false) {
-            list($cellAddress1, $cellAddress2) = explode(':', $cellAddress);
+        if (str_contains($cellAddress, ':')) {
+            [$cellAddress1, $cellAddress2] = explode(':', $cellAddress);
         }
 
         if ((!preg_match('/^'.PHPExcel_Calculation::CALCULATION_REGEXP_CELLREF.'$/i', $cellAddress1, $matches)) ||
@@ -324,8 +320,8 @@ class PHPExcel_Calculation_LookupRef
                 return PHPExcel_Calculation_Functions::REF();
             }
 
-            if (strpos($cellAddress, '!') !== false) {
-                list($sheetName, $cellAddress) = explode('!', $cellAddress);
+            if (str_contains($cellAddress, '!')) {
+                [$sheetName, $cellAddress] = explode('!', $cellAddress);
                 $sheetName = trim($sheetName, "'");
                 $pSheet = $pCell->getWorksheet()->getParent()->getSheetByName($sheetName);
             } else {
@@ -335,8 +331,8 @@ class PHPExcel_Calculation_LookupRef
             return PHPExcel_Calculation::getInstance()->extractNamedRange($cellAddress, $pSheet, false);
         }
 
-        if (strpos($cellAddress, '!') !== false) {
-            list($sheetName, $cellAddress) = explode('!', $cellAddress);
+        if (str_contains($cellAddress, '!')) {
+            [$sheetName, $cellAddress] = explode('!', $cellAddress);
             $sheetName = trim($sheetName, "'");
             $pSheet = $pCell->getWorksheet()->getParent()->getSheetByName($sheetName);
         } else {
@@ -390,16 +386,16 @@ class PHPExcel_Calculation_LookupRef
 
         $sheetName = null;
         if (strpos($cellAddress, "!")) {
-            list($sheetName, $cellAddress) = explode("!", $cellAddress);
+            [$sheetName, $cellAddress] = explode("!", $cellAddress);
             $sheetName = trim($sheetName, "'");
         }
         if (strpos($cellAddress, ":")) {
-            list($startCell, $endCell) = explode(":", $cellAddress);
+            [$startCell, $endCell] = explode(":", $cellAddress);
         } else {
             $startCell = $endCell = $cellAddress;
         }
-        list($startCellColumn, $startCellRow) = PHPExcel_Cell::coordinateFromString($startCell);
-        list($endCellColumn, $endCellRow) = PHPExcel_Cell::coordinateFromString($endCell);
+        [$startCellColumn, $startCellRow] = PHPExcel_Cell::coordinateFromString($startCell);
+        [$endCellColumn, $endCellRow] = PHPExcel_Cell::coordinateFromString($endCell);
 
         $startCellRow += $rows;
         $startCellColumn = PHPExcel_Cell::columnIndexFromString($startCellColumn) - 1;
@@ -673,8 +669,7 @@ class PHPExcel_Calculation_LookupRef
 
     private static function vlookupSort($a, $b)
     {
-        reset($a);
-        $firstColumn = key($a);
+        $firstColumn = array_key_first($a);
         if (($aLower = strtolower($a[$firstColumn])) == ($bLower = strtolower($b[$firstColumn]))) {
             return 0;
         }
@@ -827,26 +822,26 @@ class PHPExcel_Calculation_LookupRef
         $lookupRows = count($lookup_vector);
         $l = array_keys($lookup_vector);
         $l = array_shift($l);
-        $lookupColumns = count($lookup_vector[$l]);
+        $lookupColumns = is_countable($lookup_vector[$l]) ? count($lookup_vector[$l]) : 0;
         if ((($lookupRows == 1) && ($lookupColumns > 1)) || (($lookupRows == 2) && ($lookupColumns != 2))) {
             $lookup_vector = self::TRANSPOSE($lookup_vector);
             $lookupRows = count($lookup_vector);
             $l = array_keys($lookup_vector);
-            $lookupColumns = count($lookup_vector[array_shift($l)]);
+            $lookupColumns = is_countable($lookup_vector[array_shift($l)]) ? count($lookup_vector[array_shift($l)]) : 0;
         }
 
         if (is_null($result_vector)) {
             $result_vector = $lookup_vector;
         }
-        $resultRows = count($result_vector);
+        $resultRows = is_countable($result_vector) ? count($result_vector) : 0;
         $l = array_keys($result_vector);
         $l = array_shift($l);
-        $resultColumns = count($result_vector[$l]);
+        $resultColumns = is_countable($result_vector[$l]) ? count($result_vector[$l]) : 0;
         if ((($resultRows == 1) && ($resultColumns > 1)) || (($resultRows == 2) && ($resultColumns != 2))) {
             $result_vector = self::TRANSPOSE($result_vector);
             $resultRows = count($result_vector);
             $r = array_keys($result_vector);
-            $resultColumns = count($result_vector[array_shift($r)]);
+            $resultColumns = is_countable($result_vector[array_shift($r)]) ? count($result_vector[array_shift($r)]) : 0;
         }
 
         if ($lookupRows == 2) {

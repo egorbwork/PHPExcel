@@ -586,8 +586,7 @@ class PHPExcel_Calculation_Functions
     {
         $value = self::flattenArrayIndexed($value);
         if (is_array($value) && (count($value) > 1)) {
-            end($value);
-            $a = key($value);
+            $a = array_key_last($value);
             //    Range of cells is an error
             if (self::isCellValue($a)) {
                 return 16;

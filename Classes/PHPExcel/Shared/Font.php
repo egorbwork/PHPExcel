@@ -257,7 +257,7 @@ class PHPExcel_Shared_Font
         }
 
         // Special case if there are one or more newline characters ("\n")
-        if (strpos($cellText, "\n") !== false) {
+        if (str_contains($cellText, "\n")) {
             $lineTexts = explode("\n", $cellText);
             $lineWidths = array();
             foreach ($lineTexts as $lineText) {
@@ -274,7 +274,7 @@ class PHPExcel_Shared_Font
                 // Width of text in pixels excl. padding
                 // and addition because Excel adds some padding, just use approx width of 'n' glyph
                 $columnWidth = self::getTextWidthPixelsExact($cellText, $font, $rotation) + $columnWidthAdjust;
-            } catch (PHPExcel_Exception $e) {
+            } catch (PHPExcel_Exception) {
                 $approximate = true;
             }
         }

@@ -25,7 +25,6 @@
  * @license    http://www.gnu.org/licenses/old-licenses/lgpl-2.1.txt    LGPL
  * @version    ##VERSION##, ##DATE##
  */
-
 // Original file header of PEAR::Spreadsheet_Excel_Writer_Worksheet (used as the base for this class):
 // -----------------------------------------------------------------------------------------
 // /*
@@ -362,7 +361,7 @@ class PHPExcel_Writer_Excel5_Worksheet extends PHPExcel_Writer_Excel5_BIFFwriter
 
         // Write the COLINFO records if they exist
         if (!empty($this->columnInfo)) {
-            $colcount = count($this->columnInfo);
+            $colcount = count((array) $this->columnInfo);
             for ($i = 0; $i < $colcount; ++$i) {
                 $this->writeColinfo($this->columnInfo[$i]);
             }
@@ -472,11 +471,11 @@ class PHPExcel_Writer_Excel5_Worksheet extends PHPExcel_Writer_Excel5_BIFFwriter
 
         // Hyperlinks
         foreach ($phpSheet->getHyperLinkCollection() as $coordinate => $hyperlink) {
-            list($column, $row) = PHPExcel_Cell::coordinateFromString($coordinate);
+            [$column, $row] = PHPExcel_Cell::coordinateFromString($coordinate);
 
             $url = $hyperlink->getUrl();
 
-            if (strpos($url, 'sheet://') !== false) {
+            if (str_contains($url, 'sheet://')) {
                 // internal to current workbook
                 $url = str_replace('sheet://', 'internal:', $url);
 
@@ -906,7 +905,7 @@ class PHPExcel_Writer_Excel5_Worksheet extends PHPExcel_Writer_Excel5_BIFFwriter
 
             return 0;
 
-        } catch (PHPExcel_Exception $e) {
+        } catch (PHPExcel_Exception) {
             // do nothing
         }
 
@@ -1406,18 +1405,18 @@ class PHPExcel_Writer_Excel5_Worksheet extends PHPExcel_Writer_Excel5_BIFFwriter
         $selectedCells = $this->phpSheet->getSelectedCells();
         $selectedCells = PHPExcel_Cell::splitRange($this->phpSheet->getSelectedCells());
         $selectedCells = $selectedCells[0];
-        if (count($selectedCells) == 2) {
-            list($first, $last) = $selectedCells;
+        if ((is_countable($selectedCells) ? count($selectedCells) : 0) == 2) {
+            [$first, $last] = $selectedCells;
         } else {
             $first = $selectedCells[0];
             $last  = $selectedCells[0];
         }
 
-        list($colFirst, $rwFirst) = PHPExcel_Cell::coordinateFromString($first);
+        [$colFirst, $rwFirst] = PHPExcel_Cell::coordinateFromString($first);
         $colFirst = PHPExcel_Cell::columnIndexFromString($colFirst) - 1; // base 0 column index
         --$rwFirst; // base 0 row index
 
-        list($colLast, $rwLast) = PHPExcel_Cell::coordinateFromString($last);
+        [$colLast, $rwLast] = PHPExcel_Cell::coordinateFromString($last);
         $colLast = PHPExcel_Cell::columnIndexFromString($colLast) - 1; // base 0 column index
         --$rwLast; // base 0 row index
 
@@ -1446,11 +1445,11 @@ class PHPExcel_Writer_Excel5_Worksheet extends PHPExcel_Writer_Excel5_BIFFwriter
 
         // Swap last row/col for first row/col as necessary
         if ($rwFirst > $rwLast) {
-            list($rwFirst, $rwLast) = array($rwLast, $rwFirst);
+            [$rwFirst, $rwLast] = array($rwLast, $rwFirst);
         }
 
         if ($colFirst > $colLast) {
-            list($colFirst, $colLast) = array($colLast, $colFirst);
+            [$colFirst, $colLast] = array($colLast, $colFirst);
         }
 
         $header   = pack("vv", $record, $length);
@@ -1492,9 +1491,9 @@ class PHPExcel_Writer_Excel5_Worksheet extends PHPExcel_Writer_Excel5_BIFFwriter
 
             // extract the row and column indexes
             $range = PHPExcel_Cell::splitRange($mergeCell);
-            list($first, $last) = $range[0];
-            list($firstColumn, $firstRow) = PHPExcel_Cell::coordinateFromString($first);
-            list($lastColumn, $lastRow) = PHPExcel_Cell::coordinateFromString($last);
+            [$first, $last] = $range[0];
+            [$firstColumn, $firstRow] = PHPExcel_Cell::coordinateFromString($first);
+            [$lastColumn, $lastRow] = PHPExcel_Cell::coordinateFromString($last);
 
             $recordData .= pack('vvvv', $firstRow - 1, $lastRow - 1, PHPExcel_Cell::columnIndexFromString($firstColumn) - 1, PHPExcel_Cell::columnIndexFromString($lastColumn) - 1);
 
@@ -1694,7 +1693,7 @@ class PHPExcel_Writer_Excel5_Worksheet extends PHPExcel_Writer_Excel5_BIFFwriter
     {
         $panes = array();
         if ($freezePane = $this->phpSheet->getFreezePane()) {
-            list($column, $row) = PHPExcel_Cell::coordinateFromString($freezePane);
+            [$column, $row] = PHPExcel_Cell::coordinateFromString($freezePane);
             $panes[0] = $row - 1;
             $panes[1] = PHPExcel_Cell::columnIndexFromString($column) - 1;
         } else {
@@ -1702,10 +1701,10 @@ class PHPExcel_Writer_Excel5_Worksheet extends PHPExcel_Writer_Excel5_BIFFwriter
             return;
         }
 
-        $y       = isset($panes[0]) ? $panes[0] : null;
-        $x       = isset($panes[1]) ? $panes[1] : null;
-        $rwTop   = isset($panes[2]) ? $panes[2] : null;
-        $colLeft = isset($panes[3]) ? $panes[3] : null;
+        $y       = $panes[0] ?? null;
+        $x       = $panes[1] ?? null;
+        $rwTop   = $panes[2] ?? null;
+        $colLeft = $panes[3] ?? null;
         if (count($panes) > 4) { // if Active pane was received
             $pnnAct = $panes[4];
         } else {
@@ -2073,7 +2072,7 @@ class PHPExcel_Writer_Excel5_Worksheet extends PHPExcel_Writer_Excel5_BIFFwriter
 
         // Calculate the maximum column outline level. The equivalent calculation
         // for the row outline level is carried out in writeRow().
-        $colcount = count($this->columnInfo);
+        $colcount = count((array) $this->columnInfo);
         for ($i = 0; $i < $colcount; ++$i) {
             $col_level = max($this->columnInfo[$i][5], $col_level);
         }
@@ -2317,7 +2316,7 @@ class PHPExcel_Writer_Excel5_Worksheet extends PHPExcel_Writer_Excel5_BIFFwriter
     public function insertBitmap($row, $col, $bitmap, $x = 0, $y = 0, $scale_x = 1, $scale_y = 1)
     {
         $bitmap_array = (is_resource($bitmap) ? $this->processBitmapGd($bitmap) : $this->processBitmap($bitmap));
-        list($width, $height, $size, $data) = $bitmap_array; //$this->processBitmap($bitmap);
+        [$width, $height, $size, $data] = $bitmap_array; //$this->processBitmap($bitmap);
 
         // Scale the frame of the image.
         $width  *= $scale_x;
@@ -2917,7 +2916,7 @@ class PHPExcel_Writer_Excel5_Worksheet extends PHPExcel_Writer_Excel5_BIFFwriter
                     $this->parser->parse($formula1);
                     $formula1 = $this->parser->toReversePolish();
                     $sz1 = strlen($formula1);
-                } catch (PHPExcel_Exception $e) {
+                } catch (PHPExcel_Exception) {
                     $sz1 = 0;
                     $formula1 = '';
                 }
@@ -2933,7 +2932,7 @@ class PHPExcel_Writer_Excel5_Worksheet extends PHPExcel_Writer_Excel5_BIFFwriter
                     $this->parser->parse($formula2);
                     $formula2 = $this->parser->toReversePolish();
                     $sz2 = strlen($formula2);
-                } catch (PHPExcel_Exception $e) {
+                } catch (PHPExcel_Exception) {
                     $sz2 = 0;
                     $formula2 = '';
                 }

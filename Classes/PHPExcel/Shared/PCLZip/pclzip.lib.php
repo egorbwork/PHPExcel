@@ -1119,7 +1119,7 @@ class PclZip
         $this->privErrorReset();
 
         // ----- Look if the $p_archive is a PclZip object
-        if ((is_object($p_archive)) && (get_class($p_archive) == 'pclzip')) {
+        if ((is_object($p_archive)) && ($p_archive::class == 'pclzip')) {
             // ----- Duplicate the archive
             $v_result = $this->privDuplicate($p_archive->zipname);
         } elseif (is_string($p_archive)) {
@@ -1173,7 +1173,7 @@ class PclZip
         }
 
         // ----- Look if the $p_archive_to_add is a PclZip object
-        if ((is_object($p_archive_to_add)) && (get_class($p_archive_to_add) == 'pclzip')) {
+        if ((is_object($p_archive_to_add)) && ($p_archive_to_add::class == 'pclzip')) {
             // ----- Merge the archive
             $v_result = $this->privMerge($p_archive_to_add);
         } elseif (is_string($p_archive_to_add)) {

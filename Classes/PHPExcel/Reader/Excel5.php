@@ -8,7 +8,6 @@ if (!defined('PHPEXCEL_ROOT')) {
     define('PHPEXCEL_ROOT', dirname(__FILE__) . '/../../');
     require(PHPEXCEL_ROOT . 'PHPExcel/Autoloader.php');
 }
-
 /**
  * PHPExcel_Reader_Excel5
  *
@@ -34,7 +33,6 @@ if (!defined('PHPEXCEL_ROOT')) {
  * @license    http://www.gnu.org/licenses/old-licenses/lgpl-2.1.txt    LGPL
  * @version    ##VERSION##, ##DATE##
  */
-
 // Original file header of ParseXL (used as the base for this class):
 // --------------------------------------------------------------------------------
 // Adapted from Excel_Spreadsheet_Reader developed by users bizon153,
@@ -57,7 +55,6 @@ if (!defined('PHPEXCEL_ROOT')) {
 //     General code cleanup and rigor, including <80 column width
 //     Included a testcase Excel file and PHP example calls
 //     Code works for PHP 5.x
-
 // Primary changes made by canyoncasa (dvc) for ParseXL 1.10 ...
 // http://sourceforge.net/tracker/index.php?func=detail&aid=1466964&group_id=99160&atid=623334
 //     Decoding of formula conditions, results, and tokens.
@@ -440,7 +437,7 @@ class PHPExcel_Reader_Excel5 extends PHPExcel_Reader_Abstract implements PHPExce
             // get excel data
             $res = $ole->read($pFilename);
             return true;
-        } catch (PHPExcel_Exception $e) {
+        } catch (PHPExcel_Exception) {
             return false;
         }
     }
@@ -1145,7 +1142,7 @@ class PHPExcel_Reader_Excel5 extends PHPExcel_Reader_Abstract implements PHPExce
                             $explodes = explode('!', $range);    // FIXME: what if sheetname contains exclamation mark?
                             $sheetName = trim($explodes[0], "'");
                             if (count($explodes) == 2) {
-                                if (strpos($explodes[1], ':') === false) {
+                                if (!str_contains($explodes[1], ':')) {
                                     $explodes[1] = $explodes[1] . ':' . $explodes[1];
                                 }
                                 $extractedRanges[] = str_replace('$', '', $explodes[1]); // C7:J66
@@ -1623,7 +1620,8 @@ class PHPExcel_Reader_Excel5 extends PHPExcel_Reader_Abstract implements PHPExce
                 //        max 2048 bytes will probably throw a wobbly.
                 $row = self::getInt2d($recordData, 0);
                 $extension = true;
-                $cellAddress = array_pop(array_keys($this->phpSheet->getComments()));
+                $arrayKeys = array_keys($this->phpSheet->getComments());
+                $cellAddress = array_pop($arrayKeys);
             }
 //            echo 'Note Address=', $cellAddress,'<br />';
 
@@ -2823,7 +2821,7 @@ class PHPExcel_Reader_Excel5 extends PHPExcel_Reader_Abstract implements PHPExce
 
             try {
                 $formula = $this->getFormulaFromStructure($formulaStructure);
-            } catch (PHPExcel_Exception $e) {
+            } catch (PHPExcel_Exception) {
                 $formula = '';
             }
 
@@ -3701,7 +3699,7 @@ class PHPExcel_Reader_Excel5 extends PHPExcel_Reader_Abstract implements PHPExce
                 // then we should treat as rich text
                 $richText = new PHPExcel_RichText();
                 $charPos = 0;
-                $sstCount = count($this->sst[$index]['fmtRuns']);
+                $sstCount = is_countable($this->sst[$index]['fmtRuns']) ? count($this->sst[$index]['fmtRuns']) : 0;
                 for ($i = 0; $i <= $sstCount; ++$i) {
                     if (isset($fmtRuns[$i])) {
                         $text = PHPExcel_Shared_String::Substring($this->sst[$index]['value'], $charPos, $fmtRuns[$i]['charPos'] - $charPos);
@@ -3959,7 +3957,7 @@ class PHPExcel_Reader_Excel5 extends PHPExcel_Reader_Abstract implements PHPExce
                     $formula = $this->getFormulaFromStructure($formulaStructure); // get formula in human language
                     $cell->setValueExplicit('=' . $formula, PHPExcel_Cell_DataType::TYPE_FORMULA);
 
-                } catch (PHPExcel_Exception $e) {
+                } catch (PHPExcel_Exception) {
                     $cell->setValueExplicit($value, $dataType);
                 }
             } else {
@@ -4525,7 +4523,7 @@ class PHPExcel_Reader_Excel5 extends PHPExcel_Reader_Abstract implements PHPExce
         if ($this->version == self::XLS_BIFF8 && !$this->readDataOnly) {
             $cellRangeAddressList = $this->readBIFF8CellRangeAddressList($recordData);
             foreach ($cellRangeAddressList['cellRangeAddresses'] as $cellRangeAddress) {
-                if ((strpos($cellRangeAddress, ':') !== false) &&
+                if ((str_contains($cellRangeAddress, ':')) &&
                     ($this->includeCellRangeFiltered($cellRangeAddress))) {
                     $this->phpSheet->mergeCells($cellRangeAddress);
                 }
@@ -4548,8 +4546,8 @@ class PHPExcel_Reader_Excel5 extends PHPExcel_Reader_Abstract implements PHPExce
         if (!$this->readDataOnly) {
             // offset: 0; size: 8; cell range address of all cells containing this hyperlink
             try {
-                $cellRange = $this->readBIFF8CellRangeAddressFixed($recordData, 0, 8);
-            } catch (PHPExcel_Exception $e) {
+                $cellRange = $this->readBIFF8CellRangeAddressFixed($recordData);
+            } catch (PHPExcel_Exception) {
                 return;
             }
 
@@ -4616,7 +4614,7 @@ class PHPExcel_Reader_Excel5 extends PHPExcel_Reader_Abstract implements PHPExce
                     $offset += 4;
                     // offset: var; size: $us; character array of the URL, no Unicode string header, always 16-bit characters, zero-terminated
                     $url = self::encodeUTF16(substr($recordData, $offset, $us - 2), false);
-                    $nullOffset = strpos($url, 0x00);
+                    $nullOffset = strpos($url, (string) 0x00);
                     if ($nullOffset) {
                         $url = substr($url, 0, $nullOffset);
                     }
@@ -4863,7 +4861,7 @@ class PHPExcel_Reader_Excel5 extends PHPExcel_Reader_Abstract implements PHPExce
             if ($type == PHPExcel_Cell_DataValidation::TYPE_LIST) {
                 $formula1 = str_replace(chr(0), ',', $formula1);
             }
-        } catch (PHPExcel_Exception $e) {
+        } catch (PHPExcel_Exception) {
             return;
         }
         $offset += $sz1;
@@ -4880,7 +4878,7 @@ class PHPExcel_Reader_Excel5 extends PHPExcel_Reader_Abstract implements PHPExce
         $formula2 = pack('v', $sz2) . $formula2; // prepend the length
         try {
             $formula2 = $this->getFormulaFromStructure($formula2);
-        } catch (PHPExcel_Exception $e) {
+        } catch (PHPExcel_Exception) {
             return;
         }
         $offset += $sz2;
@@ -5088,7 +5086,7 @@ class PHPExcel_Reader_Excel5 extends PHPExcel_Reader_Abstract implements PHPExce
             for ($i = 0; $i < $cref; ++$i) {
                 try {
                     $cellRange = $this->readBIFF8CellRangeAddressFixed(substr($recordData, 27 + 8 * $i, 8));
-                } catch (PHPExcel_Exception $e) {
+                } catch (PHPExcel_Exception) {
                     return;
                 }
                 $cellRanges[] = $cellRange;
@@ -5362,12 +5360,12 @@ class PHPExcel_Reader_Excel5 extends PHPExcel_Reader_Abstract implements PHPExce
         $formulaStrings = array();
         foreach ($tokens as $token) {
             // initialize spaces
-            $space0 = isset($space0) ? $space0 : ''; // spaces before next token, not tParen
-            $space1 = isset($space1) ? $space1 : ''; // carriage returns before next token, not tParen
-            $space2 = isset($space2) ? $space2 : ''; // spaces before opening parenthesis
-            $space3 = isset($space3) ? $space3 : ''; // carriage returns before opening parenthesis
-            $space4 = isset($space4) ? $space4 : ''; // spaces before closing parenthesis
-            $space5 = isset($space5) ? $space5 : ''; // carriage returns before closing parenthesis
+            $space0 ??= ''; // spaces before next token, not tParen
+            $space1 ??= ''; // carriage returns before next token, not tParen
+            $space2 ??= ''; // spaces before opening parenthesis
+            $space3 ??= ''; // carriage returns before opening parenthesis
+            $space4 ??= ''; // spaces before closing parenthesis
+            $space5 ??= ''; // carriage returns before closing parenthesis
 
             switch ($token['name']) {
                 case 'tAdd': // addition
@@ -6758,7 +6756,7 @@ class PHPExcel_Reader_Excel5 extends PHPExcel_Reader_Abstract implements PHPExce
                     $cellAddress = $this->readBIFF8CellAddress(substr($formulaData, 3, 4));
 
                     $data = "$sheetRange!$cellAddress";
-                } catch (PHPExcel_Exception $e) {
+                } catch (PHPExcel_Exception) {
                     // deleted sheet reference
                     $data = '#REF!';
                 }
@@ -6776,7 +6774,7 @@ class PHPExcel_Reader_Excel5 extends PHPExcel_Reader_Abstract implements PHPExce
                     $cellRangeAddress = $this->readBIFF8CellRangeAddress(substr($formulaData, 3, 8));
 
                     $data = "$sheetRange!$cellRangeAddress";
-                } catch (PHPExcel_Exception $e) {
+                } catch (PHPExcel_Exception) {
                     // deleted sheet reference
                     $data = '#REF!';
                 }

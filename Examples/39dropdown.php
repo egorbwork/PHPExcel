@@ -67,7 +67,7 @@ foreach(glob('./data/continents/*') as $key => $filename) {
     echo "Loading $continent", EOL;
     $continent = str_replace(' ','_',$continent);
     $countries = file($filename, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
-    $countryCount = count($countries);
+    $countryCount = is_countable($countries) ? count($countries) : 0;
 
     // Transpose $countries from a row to a column array
     $countries = array_map('transpose', $countries);

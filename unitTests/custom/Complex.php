@@ -14,13 +14,13 @@ class Complex
         }
 
         //    Fix silly human errors
-        if (strpos($complexNumber, '+-') !== false) {
+        if (str_contains($complexNumber, '+-')) {
             $complexNumber = str_replace('+-', '-', $complexNumber);
         }
-        if (strpos($complexNumber, '++') !== false) {
+        if (str_contains($complexNumber, '++')) {
             $complexNumber = str_replace('++', '+', $complexNumber);
         }
-        if (strpos($complexNumber, '--') !== false) {
+        if (str_contains($complexNumber, '--')) {
             $complexNumber = str_replace('--', '-', $complexNumber);
         }
 
@@ -65,10 +65,10 @@ class Complex
         if ($imaginaryPart === null) {
             if (is_array($realPart)) {
                 //    We have an array of (potentially) real and imaginary parts, and any suffix
-                list ($realPart, $imaginaryPart, $suffix) = array_values($realPart) + array(0.0, 0.0, 'i');
+                [$realPart, $imaginaryPart, $suffix] = array_values($realPart) + array(0.0, 0.0, 'i');
             } elseif ((is_string($realPart)) || (is_numeric($realPart))) {
                 //    We've been given a string to parse to extract the real and imaginary parts, and any suffix
-                list ($realPart, $imaginaryPart, $suffix) = self::_parseComplex($realPart);
+                [$realPart, $imaginaryPart, $suffix] = self::_parseComplex($realPart);
             }
         }
 

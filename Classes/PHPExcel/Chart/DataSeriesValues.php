@@ -227,7 +227,7 @@ class PHPExcel_Chart_DataSeriesValues
     {
         $levelCount = 0;
         foreach ($this->dataValues as $dataValueSet) {
-            $levelCount = max($levelCount, count($dataValueSet));
+            $levelCount = max($levelCount, is_countable($dataValueSet) ? count($dataValueSet) : 0);
         }
         return $levelCount;
     }
@@ -306,7 +306,7 @@ class PHPExcel_Chart_DataSeriesValues
             } else {
                 $cellRange = explode('!', $this->dataSource);
                 if (count($cellRange) > 1) {
-                    list(, $cellRange) = $cellRange;
+                    [, $cellRange] = $cellRange;
                 }
 
                 $dimensions = PHPExcel_Cell::rangeDimension(str_replace('$', '', $cellRange));

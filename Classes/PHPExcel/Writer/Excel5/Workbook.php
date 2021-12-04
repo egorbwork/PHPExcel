@@ -317,9 +317,9 @@ class PHPExcel_Writer_Excel5_Workbook extends PHPExcel_Writer_Excel5_BIFFwriter
     private function addColor($rgb)
     {
         if (!isset($this->colors[$rgb])) {
-            if (count($this->colors) < 57) {
+            if ((is_countable($this->colors) ? count($this->colors) : 0) < 57) {
                 // then we add a custom color altering the palette
-                $colorIndex = 8 + count($this->colors);
+                $colorIndex = 8 + (is_countable($this->colors) ? count($this->colors) : 0);
                 $this->palette[$colorIndex] =
                     array(
                         hexdec(substr($rgb, 0, 2)),
@@ -677,7 +677,7 @@ class PHPExcel_Writer_Excel5_Workbook extends PHPExcel_Writer_Excel5_BIFFwriter
                     }
                     $chunk .= $this->writeData($this->writeDefinedNameBiff8($namedRange->getName(), $formulaData, $scope, false));
 
-                } catch (PHPExcel_Exception $e) {
+                } catch (PHPExcel_Exception) {
                     // do nothing
                 }
             }

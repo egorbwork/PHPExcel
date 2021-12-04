@@ -95,7 +95,7 @@ class PHPExcel_Reader_Excel2003XML extends PHPExcel_Reader_Abstract implements P
         $valid = true;
         foreach ($signature as $match) {
             // every part of the signature must be present
-            if (strpos($data, $match) === false) {
+            if (!str_contains($data, $match)) {
                 $valid = false;
                 break;
             }
@@ -401,7 +401,7 @@ class PHPExcel_Reader_Excel2003XML extends PHPExcel_Reader_Abstract implements P
             $style_ss = $style->attributes($namespaces['ss']);
             $styleID = (string) $style_ss['ID'];
 //            echo 'Style ID = '.$styleID.'<br />';
-            $this->styles[$styleID] = (isset($this->styles['Default'])) ? $this->styles['Default'] : array();
+            $this->styles[$styleID] = $this->styles['Default'] ?? array();
             foreach ($style as $styleType => $styleData) {
                 $styleAttributes = $styleData->attributes($namespaces['ss']);
 //                echo $styleType.'<br />';
